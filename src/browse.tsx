@@ -5,6 +5,7 @@ import { SetupErrorView } from "./components/setup-error";
 import { listEntries, type StoreEntry } from "./pass";
 import { getPassConfig } from "./preferences";
 import { errorMessage, isRecoverableSetupError } from "./utils/errors";
+import { runStoreSync } from "./utils/sync";
 import { EntryForm } from "./views/entry-form";
 
 function formatMtime(mtimeMs: number): string {
@@ -63,6 +64,15 @@ export default function BrowseCommand() {
 						title="Create Password"
 						icon={Icon.Plus}
 						target={<EntryForm onSaved={() => void refresh()} />}
+					/>
+					<Action
+						title="Sync Password Store"
+						icon={Icon.Switch}
+						shortcut={{ modifiers: ["cmd"], key: "s" }}
+						onAction={async () => {
+							await runStoreSync();
+							await refresh();
+						}}
 					/>
 					<Action title="Reload" icon={Icon.ArrowClockwise} onAction={refresh} />
 				</ActionPanel>

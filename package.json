@@ -24,6 +24,13 @@
       "subtitle": "pass",
       "description": "Insert a new entry into your password store",
       "mode": "view"
+    },
+    {
+      "name": "sync",
+      "title": "Sync Password Store",
+      "subtitle": "pass",
+      "description": "Pull then push the password store git remote",
+      "mode": "no-view"
     }
   ],
   "preferences": [

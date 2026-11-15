@@ -5,4 +5,5 @@ export * from "./otp";
 export * from "./password-generator";
 export * from "./path";
 export * from "./store";
+export * from "./sync";
 export * from "./types";

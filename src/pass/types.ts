@@ -52,6 +52,15 @@ export class PassStoreMissingError extends PassError {
 	}
 }
 
+export class PassGitMissingError extends PassError {
+	constructor(storePath: string) {
+		super(
+			`Password store at "${storePath}" is not a git repository. Run pass git init and add a remote first.`,
+		);
+		this.name = "PassGitMissingError";
+	}
+}
+
 export class PassEntryExistsError extends PassError {
 	constructor(path: string) {
 		super(`An entry already exists at "${path}".`);

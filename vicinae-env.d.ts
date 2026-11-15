@@ -25,6 +25,11 @@ declare namespace Preferences {
 	export type Create = ExtensionPreferences & {
 		
 	}
+
+	/** Command: Sync Password Store */
+	export type Sync = ExtensionPreferences & {
+		
+	}
 }
 
 declare namespace Arguments {
@@ -35,6 +40,11 @@ declare namespace Arguments {
 
 	/** Command: Create Password */
 	export type Create = {
+		
+	}
+
+	/** Command: Sync Password Store */
+	export type Sync = {
 		
 	}
 }

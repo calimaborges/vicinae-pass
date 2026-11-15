@@ -2,12 +2,12 @@
 
 Native [Vicinae](https://vicinae.com) extension for [password store](https://www.passwordstore.org/) (`pass`).
 
-Manage your GPG-encrypted password store from the launcher on **macOS** and **Linux**, without depending on Raycast compatibility. The extension wraps the `pass` CLI and leaves encryption, `gpg-agent`, and git sync alone.
+Manage your GPG-encrypted password store from the launcher on **macOS** and **Linux**, without depending on Raycast compatibility. The extension wraps the `pass` CLI and leaves encryption and `gpg-agent` alone.
 
 ## Goals
 
 - Feel native to Vicinae (`@vicinae/api`), not a Raycast port running under compatibility.
-- Cover day-to-day CRUD from the launcher: find, copy, create, edit, rename, delete.
+- Cover day-to-day CRUD from the launcher: find, copy, create, edit, rename, delete, sync.
 - Work the same on macOS and Linux.
 - Never ask for or store your GPG passphrase; rely on `gpg-agent` (and Keychain / pinentry on each OS).
 
@@ -34,6 +34,12 @@ Manage your GPG-encrypted password store from the launcher on **macOS** and **Li
 - Delete an entry (`pass rm`) with confirmation
 - Set or replace an OTP secret (`otpauth://` URI or bare base32 key)
 
+### Sync
+
+- Sync Password Store runs `pass git pull` then `pass git push`
+- Requires the store to already be a git repo with a working remote and credentials (SSH agent / credential helper)
+- Does not resolve merge conflicts; failures surface in a toast
+
 ### Configuration
 
 - Password store directory (default `~/.password-store`)
@@ -42,9 +48,9 @@ Manage your GPG-encrypted password store from the launcher on **macOS** and **Li
 
 ### Non-goals (for now)
 
-- Replacing `pass`, GPG, or git sync
+- Replacing `pass` or GPG
 - Supporting `gopass` or other stores that are not `pass`-compatible
-- Syncing or backing up the store from inside the extension
+- Resolving git merge conflicts from inside the extension
 - HOTP or QR-code scanning for OTP setup
 
 ## Requirements
