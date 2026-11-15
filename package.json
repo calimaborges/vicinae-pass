@@ -1,0 +1,70 @@
+{
+  "$schema": "https://raw.githubusercontent.com/vicinaehq/vicinae/refs/heads/main/extra/schemas/extension.json",
+  "name": "password-store",
+  "title": "Password Store",
+  "description": "Manage your GPG-encrypted password store from Vicinae",
+  "categories": ["Security"],
+  "license": "MIT",
+  "platforms": ["Linux", "macOS"],
+  "author": "caraugbor",
+  "contributors": [],
+  "pastContributors": [],
+  "icon": "extension_icon.png",
+  "commands": [
+    {
+      "name": "browse",
+      "title": "Search Passwords",
+      "subtitle": "pass",
+      "description": "Search, copy, edit and manage entries in your password store",
+      "mode": "view"
+    },
+    {
+      "name": "create",
+      "title": "Create Password",
+      "subtitle": "pass",
+      "description": "Insert a new entry into your password store",
+      "mode": "view"
+    },
+    {
+      "name": "generate",
+      "title": "Generate Password",
+      "subtitle": "pass",
+      "description": "Generate a new password and store it",
+      "mode": "view"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "storePath",
+      "type": "textfield",
+      "required": false,
+      "title": "Password Store Directory",
+      "description": "Path to your password store (defaults to ~/.password-store)",
+      "default": "~/.password-store"
+    },
+    {
+      "name": "extraPath",
+      "type": "textfield",
+      "required": false,
+      "title": "Additional PATH Entries",
+      "description": "Colon-separated directories prepended to PATH so Homebrew and custom pass binaries resolve",
+      "default": "/opt/homebrew/bin:/usr/local/bin"
+    }
+  ],
+  "scripts": {
+    "build": "vici build",
+    "dev": "vici develop",
+    "lint": "vici lint",
+    "test": "vitest run",
+    "format": "biome format --write src test"
+  },
+  "dependencies": {
+    "@vicinae/api": "^0.30.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.17",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

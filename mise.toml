@@ -1,0 +1,42 @@
+[tools]
+node = "22"
+biome = "2.3.2"
+
+[env]
+_.path = ["node_modules/.bin"]
+
+[tasks.install]
+description = "Install npm dependencies"
+run = "npm install"
+
+[tasks.dev]
+description = "Start Vicinae extension development session"
+depends = ["install"]
+run = "vici develop"
+
+[tasks.build]
+description = "Build the extension for Vicinae"
+depends = ["install"]
+run = "vici build"
+
+[tasks.lint]
+description = "Validate the manifest and lint sources"
+depends = ["install"]
+run = ["vici lint", "biome check src test"]
+
+[tasks.format]
+description = "Format sources with Biome"
+run = "biome format --write src test"
+
+[tasks.test]
+description = "Run unit and integration tests"
+depends = ["install"]
+run = "vitest run"
+
+[tasks.doctor]
+description = "Check runtime prerequisites"
+run = "bash scripts/doctor.sh"
+
+[tasks.sandbox]
+description = "Create a throwaway password store for manual testing"
+run = "bash scripts/sandbox.sh"
