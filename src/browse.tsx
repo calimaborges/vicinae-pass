@@ -6,7 +6,6 @@ import { listEntries, type StoreEntry } from "./pass";
 import { getPassConfig } from "./preferences";
 import { errorMessage, isRecoverableSetupError } from "./utils/errors";
 import { EntryForm } from "./views/entry-form";
-import { GenerateForm } from "./views/generate-form";
 
 function formatMtime(mtimeMs: number): string {
 	try {
@@ -63,12 +62,7 @@ export default function BrowseCommand() {
 					<Action.Push
 						title="Create Password"
 						icon={Icon.Plus}
-						target={<EntryForm mode="create" onSaved={() => void refresh()} />}
-					/>
-					<Action.Push
-						title="Generate Password"
-						icon={Icon.Key}
-						target={<GenerateForm onSaved={() => void refresh()} />}
+						target={<EntryForm onSaved={() => void refresh()} />}
 					/>
 					<Action title="Reload" icon={Icon.ArrowClockwise} onAction={refresh} />
 				</ActionPanel>
@@ -92,19 +86,14 @@ export default function BrowseCommand() {
 					description={
 						searchText
 							? "Try a different search."
-							: "Create an entry with pass insert, or use Create Password."
+							: "Create an entry with Create Password, or use pass insert."
 					}
 					actions={
 						<ActionPanel>
 							<Action.Push
 								title="Create Password"
 								icon={Icon.Plus}
-								target={<EntryForm mode="create" onSaved={() => void refresh()} />}
-							/>
-							<Action.Push
-								title="Generate Password"
-								icon={Icon.Key}
-								target={<GenerateForm onSaved={() => void refresh()} />}
+								target={<EntryForm onSaved={() => void refresh()} />}
 							/>
 							<Action title="Reload" icon={Icon.ArrowClockwise} onAction={refresh} />
 						</ActionPanel>

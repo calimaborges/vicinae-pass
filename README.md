@@ -7,7 +7,7 @@ Manage your GPG-encrypted password store from the launcher on **macOS** and **Li
 ## Goals
 
 - Feel native to Vicinae (`@vicinae/api`), not a Raycast port running under compatibility.
-- Cover day-to-day CRUD from the launcher: find, copy, create, generate, edit, rename, delete.
+- Cover day-to-day CRUD from the launcher: find, copy, create, edit, rename, delete.
 - Work the same on macOS and Linux.
 - Never ask for or store your GPG passphrase; rely on `gpg-agent` (and Keychain / pinentry on each OS).
 
@@ -22,18 +22,14 @@ Manage your GPG-encrypted password store from the launcher on **macOS** and **Li
 - Copy or paste a TOTP code from an `otpauth://` line (compatible with `pass-otp`)
 - Show entry path and basic metadata in the list
 
-### Create and generate
+### Create and edit
 
-- Insert a new entry (`pass insert`) with path and secret
-- Generate a new entry (`pass generate`) with UI controls for:
+- Create and edit share one form (`pass insert`) for path, password, and multiline metadata
+- Generate Password opens a separate page (Cmd+G) with:
   - **Length** (default from `PASSWORD_STORE_GENERATED_LENGTH`, usually 25)
-  - **Include symbols** (off → `pass generate --no-symbols`)
-- Optionally copy the new password after generate
-
-### Edit and maintain
-
-- Edit an existing entry in place (password and multiline metadata) inside Vicinae
-- Regenerate an existing password in place (`pass generate --in-place`), with the same length / symbols options
+  - Lowercase, uppercase, numbers, and symbols toggles
+  - Ambiguous characters excluded by default (`0 O o 1 l I |`)
+- Use Password fills the create/edit form; optionally save and copy with concealed clipboard
 - Rename / move an entry (`pass mv`)
 - Delete an entry (`pass rm`) with confirmation
 - Set or replace an OTP secret (`otpauth://` URI or bare base32 key)

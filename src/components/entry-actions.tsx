@@ -4,8 +4,7 @@ import { getPassConfig } from "../preferences";
 import { copyConcealed, pasteValue } from "../utils/clipboard";
 import { errorMessage } from "../utils/errors";
 import { EntryDetailView } from "../views/entry-detail";
-import { EditEntryForm } from "../views/entry-form";
-import { GenerateForm } from "../views/generate-form";
+import { EntryForm } from "../views/entry-form";
 import { SetOtpForm } from "../views/otp-form";
 import { RenameForm } from "../views/rename-form";
 
@@ -134,12 +133,7 @@ export function EntryActions({ entry, onChanged }: EntryActionsProps) {
 					title="Edit Entry"
 					icon={Icon.Pencil}
 					shortcut={{ modifiers: ["cmd"], key: "e" }}
-					target={<EditEntryForm path={entry.path} onSaved={onChanged} />}
-				/>
-				<Action.Push
-					title="Regenerate Password"
-					icon={Icon.ArrowClockwise}
-					target={<GenerateForm initialPath={entry.path} inPlace onSaved={() => onChanged()} />}
+					target={<EntryForm entryPath={entry.path} onSaved={onChanged} />}
 				/>
 				<Action.Push
 					title="Rename Entry"

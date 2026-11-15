@@ -1,12 +1,13 @@
 import { afterEach, describe, expect, it } from "vitest";
 import {
-	generateEntry,
+	generatePassword,
 	generateTotpFromUri,
 	insertEntry,
 	listEntries,
 	moveEntry,
 	PassEntryExistsError,
 	removeEntry,
+	serializeEntry,
 	setOtpOnEntry,
 	showEntry,
 } from "../src/pass";
@@ -25,7 +26,7 @@ afterEach(async () => {
 });
 
 describe.skipIf(!enabled)("pass operations integration", () => {
-	it("inserts, shows, generates, moves, and removes entries", async () => {
+	it("inserts, shows, edits, moves, and removes entries", async () => {
 		const temp = await createTempPassStore();
 		temps.push(temp);
 
@@ -44,11 +45,18 @@ describe.skipIf(!enabled)("pass operations integration", () => {
 				PassEntryExistsError,
 			);
 
-			const generated = await generateEntry(temp.config, "personal/generated", {
+			const generated = generatePassword({
 				length: 20,
-				noSymbols: true,
+				lowercase: true,
+				uppercase: true,
+				numbers: true,
+				symbols: false,
+				excludeAmbiguous: false,
 			});
 			expect(generated).toMatch(/^[A-Za-z0-9]{20}$/);
+			await insertEntry(temp.config, "personal/generated", `${generated}\n`);
+			const generatedEntry = await showEntry(temp.config, "personal/generated");
+			expect(generatedEntry.password).toBe(generated);
 
 			await moveEntry(temp.config, "personal/demo", "personal/renamed");
 			const renamed = await showEntry(temp.config, "personal/renamed");
@@ -65,12 +73,26 @@ describe.skipIf(!enabled)("pass operations integration", () => {
 			const code = generateTotpFromUri(otpEntry.otpauthUri as string);
 			expect(code.code).toMatch(/^\d{6}$/);
 
-			const regenerated = await generateEntry(temp.config, "personal/renamed", {
+			const regenerated = generatePassword({
 				length: 16,
-				noSymbols: true,
-				inPlace: true,
+				lowercase: true,
+				uppercase: true,
+				numbers: true,
+				symbols: false,
+				excludeAmbiguous: false,
 			});
 			expect(regenerated).toMatch(/^[A-Za-z0-9]{16}$/);
+			await insertEntry(
+				temp.config,
+				"personal/renamed",
+				serializeEntry({
+					password: regenerated,
+					fields: otpEntry.fields,
+					otpauthUri: otpEntry.otpauthUri,
+					notes: otpEntry.notes,
+				}),
+				{ force: true },
+			);
 			const afterRegen = await showEntry(temp.config, "personal/renamed");
 			expect(afterRegen.password).toBe(regenerated);
 			expect(afterRegen.otpauthUri).toContain("otpauth://");

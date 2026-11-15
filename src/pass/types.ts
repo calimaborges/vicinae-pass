@@ -26,13 +26,6 @@ export type ParsedEntry = {
 	raw: string;
 };
 
-export type GenerateOptions = {
-	length?: number;
-	noSymbols?: boolean;
-	inPlace?: boolean;
-	force?: boolean;
-};
-
 export class PassError extends Error {
 	constructor(
 		message: string,

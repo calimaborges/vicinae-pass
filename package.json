@@ -24,13 +24,6 @@
       "subtitle": "pass",
       "description": "Insert a new entry into your password store",
       "mode": "view"
-    },
-    {
-      "name": "generate",
-      "title": "Generate Password",
-      "subtitle": "pass",
-      "description": "Generate a new password and store it",
-      "mode": "view"
     }
   ],
   "preferences": [
