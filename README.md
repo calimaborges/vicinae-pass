@@ -58,7 +58,33 @@ Manage your GPG-encrypted password store from the launcher on **macOS** and **Li
 - [Vicinae](https://vicinae.com) running
 - [pass](https://www.passwordstore.org/) configured with your GPG key
 - `gpg` / `gpg-agent` available (and pinentry on each OS)
-- [mise](https://mise.jdx.dev/) for development tooling
+- [mise](https://mise.jdx.dev/) to install Node and build the extension
+
+## Install on a new computer
+
+The extension is not published to a store yet. Install it by building from this repo into Vicinae's local extensions directory.
+
+1. Install Vicinae, `pass`, `gpg` / pinentry, and clone or restore your password store (including GPG key import if needed).
+2. Clone this repository and build:
+
+```bash
+git clone https://github.com/calimaborges/vicinae-pass.git
+
+cd vicinae-pass
+mise trust
+mise install
+mise run doctor
+mise run build
+```
+
+`mise run build` writes the extension to `~/.local/share/vicinae/extensions/password-store`.
+
+3. Start (or restart) Vicinae and search for **Search Passwords**, **Create Password**, or **Sync Password Store**.
+4. Open extension preferences if needed:
+   - **Password Store Directory** — default `~/.password-store`
+   - **Additional PATH Entries** — e.g. `/opt/homebrew/bin:/usr/local/bin` so GUI Vicinae can find Homebrew `pass` / `gpg`
+
+To update later, pull the latest commits and run `mise run build` again.
 
 ## Development
 
