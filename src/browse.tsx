@@ -1,8 +1,8 @@
 import { Action, ActionPanel, Icon, List } from "@vicinae/api";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { EntryActions } from "./components/entry-actions";
 import { SetupErrorView } from "./components/setup-error";
-import { listEntries, type StoreEntry } from "./pass";
+import { listEntries, type ParsedEntry, showEntry, type StoreEntry } from "./pass";
 import { getPassConfig } from "./preferences";
 import { errorMessage, isRecoverableSetupError } from "./utils/errors";
 import { runStoreSync } from "./utils/sync";
@@ -21,10 +21,14 @@ export default function BrowseCommand() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<unknown>(null);
 	const [searchText, setSearchText] = useState("");
+	const [selectedPath, setSelectedPath] = useState<string | null>(null);
+	const [parsedEntry, setParsedEntry] = useState<ParsedEntry | null>(null);
+	const loadGeneration = useRef(0);
 
 	const refresh = useCallback(async () => {
 		setIsLoading(true);
 		setError(null);
+		setParsedEntry(null);
 		try {
 			const listed = await listEntries(getPassConfig());
 			setEntries(listed);
@@ -40,6 +44,41 @@ export default function BrowseCommand() {
 		void refresh();
 	}, [refresh]);
 
+	useEffect(() => {
+		if (!selectedPath) {
+			return;
+		}
+		if (!entries.some((entry) => entry.path === selectedPath)) {
+			setSelectedPath(null);
+			setParsedEntry(null);
+			return;
+		}
+
+		setParsedEntry(null);
+		const generation = ++loadGeneration.current;
+		const path = selectedPath;
+		const timer = setTimeout(() => {
+			void (async () => {
+				try {
+					const loaded = await showEntry(getPassConfig(), path);
+					if (generation !== loadGeneration.current) {
+						return;
+					}
+					setParsedEntry(loaded);
+				} catch {
+					if (generation !== loadGeneration.current) {
+						return;
+					}
+					setParsedEntry(null);
+				}
+			})();
+		}, 150);
+
+		return () => {
+			clearTimeout(timer);
+		};
+	}, [selectedPath, entries]);
+
 	const filtered = useMemo(() => {
 		const needle = searchText.trim().toLowerCase();
 		if (!needle) {
@@ -47,6 +86,10 @@ export default function BrowseCommand() {
 		}
 		return entries.filter((entry) => entry.path.toLowerCase().includes(needle));
 	}, [entries, searchText]);
+
+	const handleEntryChanged = useCallback(() => {
+		void refresh();
+	}, [refresh]);
 
 	if (error && isRecoverableSetupError(error)) {
 		return <SetupErrorView error={error} onRetry={refresh} />;
@@ -58,6 +101,9 @@ export default function BrowseCommand() {
 			searchBarPlaceholder="Search passwords"
 			onSearchTextChange={setSearchText}
 			filtering={false}
+			onSelectionChange={(id) => {
+				setSelectedPath(id);
+			}}
 			actions={
 				<ActionPanel>
 					<Action.Push
@@ -119,7 +165,13 @@ export default function BrowseCommand() {
 						icon={Icon.Key}
 						accessories={[{ text: formatMtime(entry.mtimeMs) }]}
 						keywords={[entry.path, entry.name, entry.folder ?? ""]}
-						actions={<EntryActions entry={entry} onChanged={refresh} />}
+						actions={
+							<EntryActions
+								entry={entry}
+								parsed={selectedPath === entry.path ? parsedEntry : null}
+								onChanged={handleEntryChanged}
+							/>
+						}
 					/>
 				))
 			)}

@@ -3,6 +3,14 @@ import type { EntryField, ParsedEntry } from "./types";
 
 const USERNAME_KEYS = new Set(["username", "user", "login", "email"]);
 
+export function isUsernameFieldKey(key: string): boolean {
+	return USERNAME_KEYS.has(key.toLowerCase());
+}
+
+export function nonUsernameFields(fields: EntryField[]): EntryField[] {
+	return fields.filter((field) => !isUsernameFieldKey(field.key));
+}
+
 export function parseEntry(raw: string): ParsedEntry {
 	const normalized = raw.replace(/\r\n/g, "\n");
 	const lines = normalized.split("\n");

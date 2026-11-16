@@ -1,6 +1,6 @@
 import { Action, ActionPanel, Detail, Icon, showToast, Toast } from "@vicinae/api";
 import { useEffect, useState } from "react";
-import { generateTotpFromUri, type ParsedEntry, showEntry } from "../pass";
+import { generateTotpFromUri, nonUsernameFields, type ParsedEntry, showEntry } from "../pass";
 import { getPassConfig } from "../preferences";
 import { copyConcealed, pasteValue } from "../utils/clipboard";
 import { errorMessage } from "../utils/errors";
@@ -16,9 +16,10 @@ function buildMarkdown(entry: ParsedEntry, otpLine: string | null): string {
 		sections.push("", `## OTP`, otpLine);
 	}
 
-	if (entry.fields.length > 0) {
+	const customFields = nonUsernameFields(entry.fields);
+	if (customFields.length > 0) {
 		sections.push("", "## Fields");
-		for (const field of entry.fields) {
+		for (const field of customFields) {
 			sections.push(`- **${field.key}:** \`${field.value}\``);
 		}
 	}
@@ -87,6 +88,8 @@ export function EntryDetailView({ path }: { path: string }) {
 		return <Detail isLoading markdown="Loading..." />;
 	}
 
+	const customFields = nonUsernameFields(entry.fields);
+
 	return (
 		<Detail
 			navigationTitle={path}
@@ -108,50 +111,93 @@ export function EntryDetailView({ path }: { path: string }) {
 						}}
 					/>
 					{entry.username ? (
-						<Action
-							title="Copy Username"
-							icon={Icon.Person}
-							onAction={async () => {
-								const username = entry.username;
-								if (!username) {
-									return;
-								}
-								await copyConcealed("username", username);
-							}}
-						/>
+						<>
+							<Action
+								title="Copy Username"
+								icon={Icon.Person}
+								onAction={async () => {
+									const username = entry.username;
+									if (!username) {
+										return;
+									}
+									await copyConcealed("username", username);
+								}}
+							/>
+							<Action
+								title="Paste Username"
+								icon={Icon.Person}
+								onAction={async () => {
+									const username = entry.username;
+									if (!username) {
+										return;
+									}
+									await pasteValue(username);
+								}}
+							/>
+						</>
 					) : null}
 					{entry.otpauthUri ? (
-						<Action
-							title="Copy OTP Code"
-							icon={Icon.Clock}
-							onAction={async () => {
-								const otpauthUri = entry.otpauthUri;
-								if (!otpauthUri) {
-									return;
-								}
-								try {
-									const code = generateTotpFromUri(otpauthUri);
-									await copyConcealed("OTP code", code.code);
-								} catch (otpError) {
-									await showToast({
-										style: Toast.Style.Failure,
-										title: "Failed to generate OTP",
-										message: errorMessage(otpError),
-									});
-								}
-							}}
-						/>
+						<>
+							<Action
+								title="Copy OTP Code"
+								icon={Icon.Clock}
+								onAction={async () => {
+									const otpauthUri = entry.otpauthUri;
+									if (!otpauthUri) {
+										return;
+									}
+									try {
+										const code = generateTotpFromUri(otpauthUri);
+										await copyConcealed("OTP code", code.code);
+									} catch (otpError) {
+										await showToast({
+											style: Toast.Style.Failure,
+											title: "Failed to generate OTP",
+											message: errorMessage(otpError),
+										});
+									}
+								}}
+							/>
+							<Action
+								title="Paste OTP Code"
+								icon={Icon.Clock}
+								onAction={async () => {
+									const otpauthUri = entry.otpauthUri;
+									if (!otpauthUri) {
+										return;
+									}
+									try {
+										const code = generateTotpFromUri(otpauthUri);
+										await pasteValue(code.code);
+									} catch (otpError) {
+										await showToast({
+											style: Toast.Style.Failure,
+											title: "Failed to generate OTP",
+											message: errorMessage(otpError),
+										});
+									}
+								}}
+							/>
+						</>
 					) : null}
-					{entry.fields.map((field) => (
+					{customFields.flatMap((field) => [
 						<Action
-							key={field.key}
+							key={`copy-${field.key}`}
 							title={`Copy ${field.key}`}
 							icon={Icon.CopyClipboard}
 							onAction={async () => {
 								await copyConcealed(field.key, field.value);
 							}}
-						/>
-					))}
+						/>,
+						<Action
+							key={`paste-${field.key}`}
+							title={`Paste ${field.key}`}
+							icon={Icon.Text}
+							onAction={async () => {
+								await pasteValue(field.value);
+							}}
+						/>,
+					])}
 				</ActionPanel>
 			}
 		/>

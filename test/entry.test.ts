@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { parseEntry, parseExtraLines, serializeEntry, setOtpOnEntry } from "../src/pass";
+import {
+	isUsernameFieldKey,
+	nonUsernameFields,
+	parseEntry,
+	parseExtraLines,
+	serializeEntry,
+	setOtpOnEntry,
+} from "../src/pass";
 
 describe("parseEntry", () => {
 	it("parses password, fields, otp, and notes", () => {
@@ -26,6 +33,20 @@ describe("parseEntry", () => {
 	it("treats login and email as username", () => {
 		expect(parseEntry("pw\nlogin: bob\n").username).toBe("bob");
 		expect(parseEntry("pw\nemail: bob@example.com\n").username).toBe("bob@example.com");
+	});
+});
+
+describe("nonUsernameFields", () => {
+	it("filters username-like keys", () => {
+		expect(isUsernameFieldKey("User")).toBe(true);
+		expect(isUsernameFieldKey("url")).toBe(false);
+		expect(
+			nonUsernameFields([
+				{ key: "username", value: "alice" },
+				{ key: "url", value: "https://example.com" },
+				{ key: "email", value: "alice@example.com" },
+			]),
+		).toEqual([{ key: "url", value: "https://example.com" }]);
 	});
 });
 
