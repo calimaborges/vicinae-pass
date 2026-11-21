@@ -17,19 +17,23 @@ declare type Preferences = ExtensionPreferences
 
 declare namespace Preferences {
   /** Command: Search Passwords */
-	export type Browse = ExtensionPreferences & {
+	export type Browse = Omit<ExtensionPreferences, never> & {
 		
 	}
 
 	/** Command: Create Password */
-	export type Create = ExtensionPreferences & {
+	export type Create = Omit<ExtensionPreferences, never> & {
 		
 	}
 
 	/** Command: Sync Password Store */
-	export type Sync = ExtensionPreferences & {
+	export type Sync = Omit<ExtensionPreferences, never> & {
 		
 	}
+}
+
+declare namespace ToolPreferences {
+  
 }
 
 declare namespace Arguments {

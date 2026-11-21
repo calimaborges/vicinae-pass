@@ -1,13 +1,14 @@
 [tools]
-node = "22"
+node = "26"
+pnpm = "10"
 biome = "2.3.2"
 
 [env]
 _.path = ["node_modules/.bin"]
 
 [tasks.install]
-description = "Install npm dependencies"
-run = "npm install"
+description = "Install dependencies"
+run = "pnpm install"
 
 [tasks.dev]
 description = "Start Vicinae extension development session"

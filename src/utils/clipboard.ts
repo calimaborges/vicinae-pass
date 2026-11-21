@@ -1,14 +1,13 @@
-import { Clipboard, closeMainWindow, showToast, Toast } from "@vicinae/api";
+import { Clipboard, closeMainWindow, PopToRootType, showHUD } from "@vicinae/api";
+
+const reopenOnSameEntry = { popToRootType: PopToRootType.Suspended };
 
 export async function copyConcealed(label: string, value: string): Promise<void> {
 	await Clipboard.copy(value, { concealed: true });
-	await showToast({
-		style: Toast.Style.Success,
-		title: `Copied ${label}`,
-	});
+	await showHUD(`Copied ${label}`, reopenOnSameEntry);
 }
 
 export async function pasteValue(value: string): Promise<void> {
 	await Clipboard.paste(value);
-	await closeMainWindow();
+	await closeMainWindow(reopenOnSameEntry);
 }

@@ -100,7 +100,7 @@ Useful tasks:
 
 | Task | Purpose |
 | --- | --- |
-| `mise run install` | Install npm dependencies |
+| `mise run install` | Install dependencies with pnpm |
 | `mise run dev` | Live-reload the extension into Vicinae |
 | `mise run build` | Production build into Vicinae's extensions directory |
 | `mise run test` | Unit + integration tests |
