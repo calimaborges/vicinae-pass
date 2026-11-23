@@ -1,5 +1,6 @@
 export * from "./cli";
 export * from "./entry";
+export * from "./gmail-alias";
 export * from "./operations";
 export * from "./otp";
 export * from "./password-generator";

@@ -49,6 +49,14 @@
       "title": "Additional PATH Entries",
       "description": "Colon-separated directories prepended to PATH so Homebrew and custom pass binaries resolve",
       "default": "/opt/homebrew/bin:/usr/local/bin"
+    },
+    {
+      "name": "gmailAddress",
+      "type": "textfield",
+      "required": false,
+      "title": "Gmail Address",
+      "description": "Base address used to generate plus aliases, such as name+random@gmail.com",
+      "placeholder": "you@gmail.com"
     }
   ],
   "packageManager": "pnpm@10.33.2",

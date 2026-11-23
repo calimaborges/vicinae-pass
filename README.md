@@ -29,6 +29,7 @@ Manage your GPG-encrypted password store from the launcher on **macOS** and **Li
   - **Length** (default from `PASSWORD_STORE_GENERATED_LENGTH`, usually 25)
   - Lowercase, uppercase, numbers, and symbols toggles
   - Ambiguous characters excluded by default (`0 O o 1 l I |`)
+- Generate Gmail Alias (Cmd+Shift+E) fills `email: name+random@gmail.com` from the configured Gmail address
 - Use Password fills the create/edit form; optionally save and copy with concealed clipboard
 - Rename / move an entry (`pass mv`)
 - Delete an entry (`pass rm`) with confirmation
@@ -44,6 +45,7 @@ Manage your GPG-encrypted password store from the launcher on **macOS** and **Li
 
 - Password store directory (default `~/.password-store`)
 - Extra `PATH` entries so Homebrew / custom `pass` binaries resolve
+- Gmail address used to generate plus aliases (`name+random@gmail.com`)
 - Prefer system `gpg-agent`; no GPG passphrase preference field
 
 ### Non-goals (for now)
@@ -83,6 +85,7 @@ mise run build
 4. Open extension preferences if needed:
    - **Password Store Directory** — default `~/.password-store`
    - **Additional PATH Entries** — e.g. `/opt/homebrew/bin:/usr/local/bin` so GUI Vicinae can find Homebrew `pass` / `gpg`
+   - **Gmail Address** — base inbox for Generate Gmail Alias, e.g. `you@gmail.com`
 
 To update later, pull the latest commits and run `mise run build` again.
 

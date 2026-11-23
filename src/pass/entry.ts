@@ -8,7 +8,14 @@ export function isUsernameFieldKey(key: string): boolean {
 }
 
 export function nonUsernameFields(fields: EntryField[]): EntryField[] {
-	return fields.filter((field) => !isUsernameFieldKey(field.key));
+	let skippedPrimaryUsername = false;
+	return fields.filter((field) => {
+		if (!skippedPrimaryUsername && isUsernameFieldKey(field.key)) {
+			skippedPrimaryUsername = true;
+			return false;
+		}
+		return true;
+	});
 }
 
 export function parseEntry(raw: string): ParsedEntry {

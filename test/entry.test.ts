@@ -37,7 +37,7 @@ describe("parseEntry", () => {
 });
 
 describe("nonUsernameFields", () => {
-	it("filters username-like keys", () => {
+	it("hides the primary username and keeps later identity fields", () => {
 		expect(isUsernameFieldKey("User")).toBe(true);
 		expect(isUsernameFieldKey("url")).toBe(false);
 		expect(
@@ -46,7 +46,10 @@ describe("nonUsernameFields", () => {
 				{ key: "url", value: "https://example.com" },
 				{ key: "email", value: "alice@example.com" },
 			]),
-		).toEqual([{ key: "url", value: "https://example.com" }]);
+		).toEqual([
+			{ key: "url", value: "https://example.com" },
+			{ key: "email", value: "alice@example.com" },
+		]);
 	});
 });
 

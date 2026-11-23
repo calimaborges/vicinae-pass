@@ -11,13 +11,15 @@ import {
 } from "@vicinae/api";
 import { useEffect, useState } from "react";
 import {
+	generateGmailAlias,
 	insertEntry,
 	PassEntryExistsError,
 	parseExtraLines,
 	serializeEntry,
 	showEntry,
+	upsertEmailLine,
 } from "../pass";
-import { getPassConfig } from "../preferences";
+import { getGmailAddress, getPassConfig } from "../preferences";
 import { copyConcealed } from "../utils/clipboard";
 import { errorMessage } from "../utils/errors";
 import { GeneratePasswordForm } from "./generate-password-form";
@@ -103,6 +105,37 @@ export function EntryForm({ entryPath, onSaved }: EntryFormProps) {
 
 	function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
 		setState((current) => ({ ...current, [key]: value }));
+	}
+
+	async function generateAlias() {
+		const baseEmail = getGmailAddress();
+		if (!baseEmail) {
+			await showToast({
+				style: Toast.Style.Failure,
+				title: "Gmail address not configured",
+				message: "Set Gmail Address in the extension preferences.",
+			});
+			return;
+		}
+
+		try {
+			const alias = generateGmailAlias(baseEmail);
+			setState((current) => ({
+				...current,
+				extra: upsertEmailLine(current.extra, alias),
+			}));
+			await showToast({
+				style: Toast.Style.Success,
+				title: "Gmail alias generated",
+				message: alias,
+			});
+		} catch (error) {
+			await showToast({
+				style: Toast.Style.Failure,
+				title: "Failed to generate Gmail alias",
+				message: errorMessage(error),
+			});
+		}
 	}
 
 	async function saveEntry(copyAfter: boolean) {
@@ -204,6 +237,14 @@ export function EntryForm({ entryPath, onSaved }: EntryFormProps) {
 						target={
 							<GeneratePasswordForm onGenerated={(password) => updateField("password", password)} />
 						}
+					/>
+					<Action
+						title="Generate Gmail Alias"
+						icon={Icon.Envelope}
+						shortcut={{ modifiers: ["cmd", "shift"], key: "e" }}
+						onAction={() => {
+							void generateAlias();
+						}}
 					/>
 					<Action.SubmitForm
 						title={isEdit ? "Save and Copy Password" : "Create and Copy Password"}

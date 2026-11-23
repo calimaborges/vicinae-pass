@@ -11,6 +11,9 @@ type ExtensionPreferences = {
 
 	/** Additional PATH Entries - Colon-separated directories prepended to PATH so Homebrew and custom pass binaries resolve */
 	"extraPath"?: string;
+
+	/** Gmail Address - Base address used to generate plus aliases, such as name+random@gmail.com */
+	"gmailAddress"?: string;
 }
 
 declare type Preferences = ExtensionPreferences
